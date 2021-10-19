@@ -1,0 +1,49 @@
+{
+  "sap.app": {
+    "id": "myCalendar",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "myCalendar.view.Main",
+      "type": "XML",
+      "async": true
+    },
+    "models": {
+      "calendar": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/Calendar.json"
+      }
+    },
+    "dependencies": {
+      "libs": {
+        "sap.ui.unified": {}
+      }
+    },
+    "config": {
+      "sample": {
+        "stretch": true,
+        "files": [
+          "webapp/controller/Main.controller.js",
+          "webapp/images/Donna_Moore.jpg",
+          "webapp/images/Elena_Petrova.jpg",
+          "webapp/images/John_Li.jpg",
+          "webapp/images/John_Miller.png",
+          "webapp/model/Calendar.json",
+          "webapp/model/formatter.js",
+          "webapp/view/Main.view.xml",
+          "webapp/view/Legend.fragment.xml",
+          "webapp/view/PlanningCalendar.fragment.xml",
+          "webapp/view/SinglePlanningCalendar.fragment.xml",
+          "webapp/Component.js",
+          "webapp/index.html",
+          "webapp/manifest.json",
+          "manifest.json",
+          "ui5.yaml"
+        ]
+      }
+    }
+  }
+}

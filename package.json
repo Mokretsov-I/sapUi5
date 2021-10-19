@@ -1,0 +1,27 @@
+{
+  "name": "myCalendar",
+  "version": "0.0.1",
+  "private": true,
+  "sapuxLayer": "CUSTOMER_BASE",
+  "description": "A Fiori application.",
+  "keywords": [
+    "ui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "start": "ui5 serve --open 'index.html'"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^2.11.1",
+    "@ui5/fs": "^2.0.6",
+    "@ui5/logger": "^2.0.1",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "3.0.2"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}
