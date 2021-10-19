@@ -10,10 +10,9 @@
 			rows="{calendar>/team}"
 			appointmentsVisualization="Filled"
 			showEmptyIntervalHeaders="false"
-			showWeekNumbers="true"
-			rowSelectionChange=".rowSelectionHandler"
+			showWeekNumbers="false"
 			startDateChange=".startDateChangeHandler"
-			viewChange=".viewChangeHandler">
+			>
 			<toolbarContent>
 				<Button
 					id="PlanningCalendarCreateAppointmentButton"
