@@ -1,51 +1,104 @@
 sap.ui.define(
 	[
 		"sap/ui/core/mvc/Controller",
-		"sap/ui/core/Fragment",
-		"sap/ui/core/Item",
+		"sap/ui/model/json/JSONModel",
 		"sap/m/MessageToast",
-		"model/formatter",
+		"sap/ui/core/Fragment",
 	],
-	function (Controller, Fragment, Item, MessageToast, formatter) {
+	function (Controller, JSONModel, MessageToast, Fragment) {
 		"use strict";
 
 		return Controller.extend("myCalendar.controller.Main", {
-			myformatter: formatter,
-			imagePath: "./",
-
-			// Initial setup
 			onInit: function () {
-				this._oModel = this.getView().getModel("calendar");
-				this._oStartDate = this.myformatter.utcToLocalDateTime(new Date());
-				this._sSelectedView = this._oModel.getProperty("/viewKey");
-				this._sSelectedMember = "Team";
 				this._oCalendarContainer = this.byId("mainContent");
 
-				// load Calendar
-				Fragment.load({
-					id: this.getView().getId(),
-					name: "myCalendar.view.PlanningCalendar",
-					controller: this,
-				}).then(
-					function (oCalendarVBox) {
-						this._displayCalendar("PlanningCalendar", oCalendarVBox);
-					}.bind(this)
-				);
+				// create model
+				var oModel = new JSONModel();
+				oModel.setData({
+					startDate: new Date(),
+					minDate: new Date(),
+					people: [
+						{
+							pic: "test-resources/sap/ui/documentation/sdk/images/John_Miller.png",
+							name: "John Miller",
+							role: "team member",
+							appointments: [
+								{
+									start: new Date("2021", "9", "21", "09", "00"),
+									end: new Date("2021", "9", "23", "11", "00"),
+									title: "Team sync",
+									info: "Canteen",
+									type: "Type07",
+									pic: "sap-icon://family-care",
+								},
+								{
+									start: new Date("2021", "9", "22", "09", "0"),
+									end: new Date("2021", "9", "22", "11", "0"),
+									title: "Morning Sync",
+									info: "I call you",
+									type: "Type01",
+									pic: "sap-icon://call",
+								},
+							],
+						},
+						{
+							pic: "test-resources/sap/ui/documentation/sdk/images/Donna_Moore.jpg",
+							name: "Donna Moore",
+							role: "team member",
+							appointments: [
+								{
+									start: new Date("2021", "9", "22", "08", "00"),
+									end: new Date("2021", "9", "22", "09", "50"),
+									title: "Team sync",
+									info: "Canteen",
+									type: "Type07",
+									pic: "sap-icon://family-care",
+								},
+								{
+									start: new Date("2021", "9", "24", "10", "00"),
+									end: new Date("2021", "9", "24", "20", "00"),
+									title: "Sync John",
+									info: "Online",
+									type: "Type03",
+								},
+							],
+						},
+						{
+							name: "Общий пул задач",
+							appointments: [
+								{
+									start: new Date("2021", "9", "22", "09", "00"),
+									end: new Date("2021", "9", "22", "09", "50"),
+									title: "Team sync",
+									info: "Canteen",
+									type: "Type07",
+									pic: "sap-icon://family-care",
+								},
+								{
+									start: new Date("2021", "9", "24", "10", "00"),
+									end: new Date("2021", "9", "24", "18", "00"),
+									title: "Sync John",
+									info: "Online",
+									type: "Type03",
+								},
+							],
+						},
+					],
+				});
+				this.getView().setModel(oModel);
 			},
 
-			// Saves currently selected date
-			startDateChangeHandler: function (oEvent) {
-				this._oStartDate = new Date(oEvent.getSource().getStartDate());
+			test: function (oEvent) {
+				console.log(oEvent);
 			},
 
 			// Handler of the "Create" button
 			newTaskCreate: function (oEvent) {
-				var oSource = oEvent.getSource();
-				var oView = this._oCalendarContainer;
-				console.log(oSource);
+				var oSource = oEvent.getSource(),
+					oView = this._oCalendarContainer;
 				if (!this._pCreateTaskPopover) {
 					this._pCreateTaskPopover = Fragment.load({
-						id: oView.getId(),
+						id: this.getView().getId(),
 						name: "myCalendar.view.CreateTask",
 						controller: this,
 					}).then(function (oCreateTaskPopover) {
@@ -62,31 +115,128 @@ sap.ui.define(
 				});
 			},
 
-			appointmentDrop: function (oControlEvent) {
-				var oAppointment = oControlEvent.getParameters("appointment");
-				// oAppointment.mProperties.startDate =
-				// 	oControlEvent.getParameters("startDate");
-				// oAppointment.mProperties.endDate =
-				// 	oControlEvent.getParameters("endDate");
+			saveNewTask: function (oEvent) {
+				var name = this.getView().byId("TaskName");
+				var time = this.getView().byId("TaskTime");
+				if ((name.getValue(), time.getValue())) {
+					var oModel = this.getView().getModel();
+					var freeTasks =
+						oModel.oData.people[oModel.oData.people.length - 1].appointments;
+					var dateEnd = new Date();
+					var timeVal = parseInt(time.getValue());
 
-				var oAppBindingContext = oAppointment;
-				console.log(oAppBindingContext);
-				//this._oModel.refresh(true);
+					dateEnd.setDate(dateEnd.getDate() + Math.trunc(timeVal / 8));
+					dateEnd.setUTCHours(dateEnd.getUTCHours() + (timeVal % 8));
+
+					freeTasks.push({
+						start: new Date(),
+						end: dateEnd,
+						title: name.getValue(),
+					});
+
+					name.setValue("");
+					time.setValue("");
+
+					this._pCreateTaskPopover.then(function (popover) {
+						popover.close();
+					});
+
+					oModel.refresh(true);
+				} else {
+					MessageToast.show("Необходимо заполнить оба поля");
+				}
 			},
 
-			appointmentResize: function (oEvent) {
-				console.log("appointmentResize", oEvent);
+			handleAppointmentDragEnter: function (oEvent) {
+				if (
+					this.isAppointmentOverlap(oEvent, oEvent.getParameter("calendarRow"))
+				) {
+					oEvent.preventDefault();
+				}
 			},
 
-			_displayCalendar: function (sCalendarId, oCalendarVBox) {
-				this._oCalendarContainer.addContent(oCalendarVBox);
-				var oCalendar = oCalendarVBox.getItems()[0];
-				oCalendar.setStartDate(this._oStartDate);
-				oCalendar.setViewKey(this._sSelectedView);
-				oCalendar.bindElement({
-					path: "/team",
-					model: "calendar",
-				});
+			handleAppointmentDrop: function (oEvent) {
+				var oAppointment = oEvent.getParameter("appointment"),
+					oStartDate = oEvent.getParameter("startDate"),
+					oEndDate = oEvent.getParameter("endDate"),
+					oCalendarRow = oEvent.getParameter("calendarRow"),
+					oModel = this.getView().getModel(),
+					oAppBindingContext = oAppointment.getBindingContext(),
+					oRowBindingContext = oCalendarRow.getBindingContext();
+
+				var handleAppointmentDropBetweenRows = function () {
+					var aPath = oAppBindingContext.getPath().split("/"),
+						iIndex = aPath.pop(),
+						sRowAppointmentsPath = aPath.join("/");
+
+					oRowBindingContext
+						.getObject()
+						.appointments.push(
+							oModel.getProperty(oAppBindingContext.getPath())
+						);
+
+					oModel.getProperty(sRowAppointmentsPath).splice(iIndex, 1);
+				};
+
+				oModel.setProperty("start", oStartDate, oAppBindingContext);
+				oModel.setProperty("end", oEndDate, oAppBindingContext);
+
+				if (oAppointment.getParent() !== oCalendarRow) {
+					handleAppointmentDropBetweenRows();
+				}
+
+				oModel.refresh(true);
+			},
+
+			handleAppointmentResize: function (oEvent) {
+				var oAppointment = oEvent.getParameter("appointment"),
+					oStartDate = oEvent.getParameter("startDate"),
+					oEndDate = oEvent.getParameter("endDate");
+
+				if (!this.isAppointmentOverlap(oEvent, oAppointment.getParent())) {
+					oAppointment.setStartDate(oStartDate).setEndDate(oEndDate);
+				}
+			},
+
+			isAppointmentOverlap: function (oEvent, oCalendarRow) {
+				var oAppointment = oEvent.getParameter("appointment"),
+					oStartDate = oEvent.getParameter("startDate"),
+					oEndDate = oEvent.getParameter("endDate"),
+					bAppointmentOverlapped;
+
+				bAppointmentOverlapped = oCalendarRow
+					.getAppointments()
+					.some(function (oCurrentAppointment) {
+						if (oCurrentAppointment === oAppointment) {
+							return;
+						}
+
+						var oAppStartTime = oCurrentAppointment.getStartDate().getTime(),
+							oAppEndTime = oCurrentAppointment.getEndDate().getTime();
+
+						if (
+							oAppStartTime <= oStartDate.getTime() &&
+							oStartDate.getTime() < oAppEndTime
+						) {
+							return true;
+						}
+
+						if (
+							oAppStartTime < oEndDate.getTime() &&
+							oEndDate.getTime() <= oAppEndTime
+						) {
+							return true;
+						}
+
+						if (
+							oStartDate.getTime() <= oAppStartTime &&
+							oAppStartTime < oEndDate.getTime()
+						) {
+							return true;
+						}
+					});
+
+				return bAppointmentOverlapped;
 			},
 		});
 	}

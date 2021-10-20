@@ -11,12 +11,6 @@
       "type": "XML",
       "async": true
     },
-    "models": {
-      "calendar": {
-        "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/Calendar.json"
-      }
-    },
     "dependencies": {
       "libs": {
         "sap.ui.unified": {}

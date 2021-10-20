@@ -11,13 +11,13 @@
       id="TaskName"
       placeholder="Название задачи"/>
     <Input
-      id="Task"
-      placeholder="TaskTime"
+      id="TaskTime"
+      placeholder="Трудоемкость"
       type="Number"/>
     <Button
       id="TaskSaveButton"
       text="Сохранить"
-      press=".saveTaskCreate"
+      press=".saveNewTask"
       tooltip="Создать задачу в общем пуле"/>
 	</ResponsivePopover>
 </core:FragmentDefinition>
