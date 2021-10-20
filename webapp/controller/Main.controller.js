@@ -20,8 +20,6 @@ sap.ui.define(
 				this._sSelectedView = this._oModel.getProperty("/viewKey");
 				this._sSelectedMember = "Team";
 				this._oCalendarContainer = this.byId("mainContent");
-				this._mCalendars = {};
-				this._sCalendarDisplayed = "";
 
 				// load Calendar
 				Fragment.load({
@@ -41,13 +39,47 @@ sap.ui.define(
 			},
 
 			// Handler of the "Create" button
-			appointmentCreate: function (oEvent) {
-				MessageToast.show("Creating new appointment...");
+			newTaskCreate: function (oEvent) {
+				var oSource = oEvent.getSource();
+				var oView = this._oCalendarContainer;
+				console.log(oSource);
+				if (!this._pCreateTaskPopover) {
+					this._pCreateTaskPopover = Fragment.load({
+						id: oView.getId(),
+						name: "myCalendar.view.CreateTask",
+						controller: this,
+					}).then(function (oCreateTaskPopover) {
+						oView.addDependent(oCreateTaskPopover);
+						return oCreateTaskPopover;
+					});
+				}
+				this._pCreateTaskPopover.then(function (oCreateTaskPopover) {
+					if (oCreateTaskPopover.isOpen()) {
+						oCreateTaskPopover.close();
+					} else {
+						oCreateTaskPopover.openBy(oSource);
+					}
+				});
+			},
+
+			appointmentDrop: function (oControlEvent) {
+				var oAppointment = oControlEvent.getParameters("appointment");
+				// oAppointment.mProperties.startDate =
+				// 	oControlEvent.getParameters("startDate");
+				// oAppointment.mProperties.endDate =
+				// 	oControlEvent.getParameters("endDate");
+
+				var oAppBindingContext = oAppointment;
+				console.log(oAppBindingContext);
+				//this._oModel.refresh(true);
+			},
+
+			appointmentResize: function (oEvent) {
+				console.log("appointmentResize", oEvent);
 			},
 
 			_displayCalendar: function (sCalendarId, oCalendarVBox) {
 				this._oCalendarContainer.addContent(oCalendarVBox);
-				this._sCalendarDisplayed = sCalendarId;
 				var oCalendar = oCalendarVBox.getItems()[0];
 				oCalendar.setStartDate(this._oStartDate);
 				oCalendar.setViewKey(this._sSelectedView);

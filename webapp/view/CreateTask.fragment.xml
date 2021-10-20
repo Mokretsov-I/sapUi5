@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+		xmlns="sap.m"
+		xmlns:core="sap.ui.core"
+		xmlns:u="sap.ui.unified">
+	<ResponsivePopover
+    title="Добавить новую задачу"
+    placement="Bottom"
+    showArrow="false"
+    class="create-task">
+		<Input
+      id="TaskName"
+      placeholder="Название задачи"/>
+    <Input
+      id="Task"
+      placeholder="TaskTime"
+      type="Number"/>
+    <Button
+      id="TaskSaveButton"
+      text="Сохранить"
+      press=".saveTaskCreate"
+      tooltip="Создать задачу в общем пуле"/>
+	</ResponsivePopover>
+</core:FragmentDefinition>
