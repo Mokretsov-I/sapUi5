@@ -1,0 +1,22 @@
+<core:FragmentDefinition
+		xmlns="sap.m"
+		xmlns:core="sap.ui.core"
+		xmlns:u="sap.ui.unified">
+	<ResponsivePopover
+    title="Добавить нового пользователя"
+    placement="Bottom"
+    showArrow="false"
+    class="create-task">
+		<Input
+      id="personName"
+      placeholder="Имя пользователя"/>
+    <Input
+      id="personPosition"
+      placeholder="Должность"/>
+    <Button
+      id="personSaveButton"
+      text="Сохранить"
+      press=".saveNewPerson"
+      tooltip="Создать пользователя"/>
+	</ResponsivePopover>
+</core:FragmentDefinition>

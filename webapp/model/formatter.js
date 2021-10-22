@@ -1,16 +1,21 @@
-sap.ui.define([], function () {
+sap.ui.define(["sap/ui/core/format/DateFormat"], function (DateFormat) {
 	"use strict";
 
 	return {
-		utcToLocalDateTime: function (sDateTimeUTC) {
-			if (!sDateTimeUTC) return null;
-			return new Date(sDateTimeUTC);
-		},
+		formatDate: function (oDate) {
+			if (oDate) {
+				var iHours = oDate.getHours(),
+					iMinutes = oDate.getMinutes(),
+					iSeconds = oDate.getSeconds();
 
-		fixImagePath: function (sImage) {
-			if (sImage && sImage.substr(0, 11) !== "sap-icon://")
-				sImage = this.imagePath + sImage;
-			return sImage;
+				if (iHours !== 0 || iMinutes !== 0 || iSeconds !== 0) {
+					return DateFormat.getDateTimeInstance({ style: "medium" }).format(
+						oDate
+					);
+				} else {
+					return DateFormat.getDateInstance({ style: "medium" }).format(oDate);
+				}
+			}
 		},
 	};
 });

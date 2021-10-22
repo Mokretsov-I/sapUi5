@@ -7,18 +7,26 @@
 	<VBox class="sapUiSmallMargin" id="mainContent">
 		<PlanningCalendar
 				id="PC1"
-				minDate="{path: '/minDate'}"
+				minDate="{path: '/startDate'}"
 				startDate="{path: '/startDate'}"
 				rows="{path: '/people'}"
 				appointmentsVisualization="Filled"
-				appointmentSelect=".test">
+				appointmentSelect=".selectAppointment"
+				viewKey="Day">
 			<toolbarContent>
-				<Title text="Планировщик задач" titleStyle="H4"/>
+				<Title text="Планировщик задач" titleStyle="H2"/>
 				<Button
 					id="PlanningCalendarCreateTaskButton"
 					text="Новая задача"
 					press=".newTaskCreate"
+					icon="sap-icon://add"
 					tooltip="Создать новую задачу в общем пуле"/>
+				<Button
+					id="PlanningCalendarCreatePersonButton"
+					text="Новый пользователь"
+					press=".newPersonCreate"
+					icon="sap-icon://add-employee"
+					tooltip="Создать нового пользователя"/>
 			</toolbarContent>
 			<rows>
 				<PlanningCalendarRow
@@ -37,11 +45,7 @@
 						<unified:CalendarAppointment
 								startDate="{start}"
 								endDate="{end}"
-								icon="{pic}"
-								title="{title}"
-								text="{info}"
-								type="{type}"
-								tentative="{tentative}">
+								title="{title}">
 						</unified:CalendarAppointment>
 					</appointments>
 				</PlanningCalendarRow>

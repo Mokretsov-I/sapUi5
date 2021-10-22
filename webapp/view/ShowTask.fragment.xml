@@ -1,0 +1,26 @@
+<core:FragmentDefinition
+		xmlns="sap.m"
+		xmlns:f="sap.ui.layout.form"
+		xmlns:core="sap.ui.core">
+	<ResponsivePopover
+			id="detailsTaskPopover"
+			title="{title}"
+			class="sapUiContentPadding"
+			placement="Auto">
+		<beginButton>
+			<Button text="Изменить" type="Emphasized" press="handleEditButton"/>
+		</beginButton>
+		<endButton>
+			<Button text="Удалить" press="handleDeleteAppointment"/>
+		</endButton>
+		<f:SimpleForm
+				editable="false"
+				layout="ResponsiveGridLayout"
+				singleContainerFullSize="false">
+			<Label text="Дата начала" labelFor="startDateText"/>
+			<Text id="startDateText" text="{path: 'start', formatter: '.myformatter.formatDate'}"/>
+			<Label text="Дата окончания" labelFor="endDateText"/>
+			<Text id="endDateText" text="{path: 'end', formatter: '.myformatter.formatDate'}"/>
+		</f:SimpleForm>
+	</ResponsivePopover>
+</core:FragmentDefinition>

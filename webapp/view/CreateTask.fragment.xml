@@ -8,14 +8,14 @@
     showArrow="false"
     class="create-task">
 		<Input
-      id="TaskName"
+      id="taskName"
       placeholder="Название задачи"/>
     <Input
-      id="TaskTime"
+      id="taskTime"
       placeholder="Трудоемкость"
       type="Number"/>
     <Button
-      id="TaskSaveButton"
+      id="taskSaveButton"
       text="Сохранить"
       press=".saveNewTask"
       tooltip="Создать задачу в общем пуле"/>
