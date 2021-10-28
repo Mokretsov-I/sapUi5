@@ -356,14 +356,24 @@ sap.ui.define(
 
 				var oModel = this.getView().getModel();
 				var freeTasks = oModel.oData.people[0].appointments;
+				var dateStart = new Date();
 				var dateEnd = new Date();
-				var timeVal = parseInt(parseFloat(time.getValue()) * 8);
+				var timeVal = parseInt(parseFloat(time.getValue()) * 9);
 
-				dateEnd.setDate(dateEnd.getDate() + Math.trunc(timeVal / 8));
-				dateEnd.setUTCHours(dateEnd.getUTCHours() + (timeVal % 8));
+				dateStart.setHours(9, 0, 0, 0);
+				dateEnd = new Date(dateStart);
+
+				while (timeVal - 9 > 0) {
+					dateEnd.setDate(dateEnd.getDate() + 1);
+					timeVal -= 9;
+				}
+
+				if (timeVal > 0) {
+					dateEnd.setUTCHours(dateEnd.getUTCHours() + timeVal);
+				}
 
 				freeTasks.push({
-					start: new Date(),
+					start: dateStart,
 					end: dateEnd,
 					title: name.getValue(),
 				});
@@ -424,7 +434,7 @@ sap.ui.define(
 				name.setValue("");
 				position.setValue("");
 
-				oModel.refresh(true);
+				this.getView().getModel().refresh(true);
 			},
 
 			// handler for delete button in ShowTask fragment

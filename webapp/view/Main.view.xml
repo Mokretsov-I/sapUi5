@@ -7,7 +7,6 @@
 	<VBox class="sapUiSmallMargin" id="mainContent">
 		<PlanningCalendar
 				id="PC1"
-				minDate="{path: '/startDate'}"
 				startDate="{path: '/startDate'}"
 				rows="{path: '/people'}"
 				appointmentsVisualization="Filled"
